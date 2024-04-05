@@ -2,6 +2,7 @@
 <thlogic>
     <attr sel="#header" th:replace="header :: header" />
     <attr sel="#footer" th:replace="footer :: footer" />
+
     <attr sel="#article-table">
         <attr sel="tbody" th:remove="all-but-first">
             <attr sel="tr[0]" th:each="article : ${articles}">
@@ -12,6 +13,7 @@
             </attr>
         </attr>
     </attr>
+
 
     <attr sel="#pagination">
         <attr sel="li[0]/a"
@@ -32,4 +34,5 @@
               th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
         />
     </attr>
+
 </thlogic>
