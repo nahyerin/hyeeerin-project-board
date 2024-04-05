@@ -1,5 +1,9 @@
 package com.hyeeerin.projectboard.controller;
 
+import com.hyeeerin.projectboard.response.ArticleResponse;
+import com.hyeeerin.projectboard.service.ArticleService;
+import com.hyeeerin.projectboard.service.PaginationService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,8 @@ import java.util.List;
 @Controller
 public class ArticleController {
 
+    private final ArticleService articleService;
+    private final PaginationService paginationService;
     @GetMapping
     public String articles(ModelMap map) {
         map.addAttribute("articles", List.of());
@@ -21,8 +27,11 @@ public class ArticleController {
 
     @GetMapping("/{articleId}")
     public String article(@PathVariable Long articleId, ModelMap map) {
-        map.addAttribute("article", "article"); // TODO: 구현할 때 여기에 실제 데이터를 넣어줘야 한다
-        map.addAttribute("articleComments", List.of());
+        Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+
+        map.addAttribute("articles", articles);
+        map.addAttribute("paginationBarNumbers", barNumbers);
 
         return "articles/detail";
     }
